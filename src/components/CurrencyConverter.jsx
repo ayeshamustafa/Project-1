@@ -6,27 +6,31 @@ const CurrencyConverter = () => {
   const [amount, setAmount] = useState('');
   const [convertedAmount, setConvertedAmount] = useState('');
 
-  const handleCurrencyChange = event => {
+  const handleCurrencyChange = (event) => {
     setCurrency(event.target.value);
-  }
+  };
 
-  const handleAmountChange = event => {
+  const handleAmountChange = (event) => {
     setAmount(event.target.value);
-  }
+  };
 
   const handleConvert = async () => {
-    const response = await axios.get(`https://api.coindesk.com/v1/bpi/currentprice/${currency}.json`);
+    const response = await axios.get(
+      `https://api.coindesk.com/v1/bpi/currentprice/${currency}.json`
+    );
     const rate = response.data.bpi[currency].rate_float;
-    const converted = (+(amount / rate).toFixed(8));
+    const converted = +(amount / rate).toFixed(8);
     setConvertedAmount(converted);
-  }
+  };
 
   const handleConvertToBTC = async () => {
-    const response = await axios.get(`https://api.coindesk.com/v1/bpi/currentprice/${currency}.json`);
+    const response = await axios.get(
+      `https://api.coindesk.com/v1/bpi/currentprice/${currency}.json`
+    );
     const rate = response.data.bpi[currency].rate_float;
-    const converted = (+(amount * rate).toFixed(8));
+    const converted = +(amount * rate).toFixed(8);
     setConvertedAmount(converted);
-  }
+  };
 
   return (
     <section id="currency-converter">
@@ -39,14 +43,28 @@ const CurrencyConverter = () => {
           <option value="GBP">British Pound Sterling (GBP)</option>
         </select>
         <label htmlFor="amount">Enter Amount:</label>
-        <input type="number" id="amount" value={amount} onChange={handleAmountChange} />
-        <button type="button" onClick={handleConvert}>Convert to Bitcoin</button>
-        <button type="button" onClick={handleConvertToBTC}>Convert to {currency}</button>
+        <input
+          type="number"
+          id="amount"
+          value={amount}
+          onChange={handleAmountChange}
+        />
+        <button type="button" onClick={handleConvert}>
+          Convert to Bitcoin
+        </button>
+        <button type="button" onClick={handleConvertToBTC}>
+          Convert to {currency}
+        </button>
         <label htmlFor="convertedAmount">Converted Amount:</label>
-        <input type="number" id="convertedAmount" value={convertedAmount} readOnly />
+        <input
+          type="number"
+          id="convertedAmount"
+          value={convertedAmount}
+          readOnly
+        />
       </form>
     </section>
   );
-}
+};
 
 export default CurrencyConverter;

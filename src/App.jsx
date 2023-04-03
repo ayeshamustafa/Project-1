@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import ConversionRates from "./components/ConversionRates";
-import CurrencyConverter from "./components/CurrencyConverter";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import ConversionRates from './components/ConversionRates';
+import CurrencyConverter from './components/CurrencyConverter';
+import axios from 'axios';
 
 function App() {
   const [data, setData] = useState({});
@@ -14,7 +14,9 @@ function App() {
     const fetchData = async () => {
       try {
         setIsFetching(true);
-        const response = await axios.get("https://api.coindesk.com/v1/bpi/currentprice.json");
+        const response = await axios.get(
+          'https://api.coindesk.com/v1/bpi/currentprice.json'
+        );
         setData(response.data.bpi);
         setLastFetchTime(response.data.time.updated);
         setIsFetching(false);
@@ -29,15 +31,24 @@ function App() {
 
   const handleRefetch = async () => {
     if (!isFetching) {
-      try {
-        setIsFetching(true);
-        const response = await axios.get("https://api.coindesk.com/v1/bpi/currentprice.json");
-        setData(response.data.bpi);
-        setLastFetchTime(response.data.time.updated);
-        setIsFetching(false);
-      } catch (error) {
-        console.log(error);
-        setIsFetching(false);
+      const currentTime = new Date().getTime();
+      const fiveMinutes = 300000;
+      if (
+        !lastFetchTime ||
+        currentTime - new Date(lastFetchTime).getTime() >= fiveMinutes
+      ) {
+        try {
+          setIsFetching(true);
+          const response = await axios.get(
+            'https://api.coindesk.com/v1/bpi/currentprice.json'
+          );
+          setData(response.data.bpi);
+          setLastFetchTime(response.data.time.updated);
+          setIsFetching(false);
+        } catch (error) {
+          console.log(error);
+          setIsFetching(false);
+        }
       }
     }
   };
@@ -54,7 +65,9 @@ function App() {
 
   const convertTime = (time) => {
     const utcDate = new Date(time);
-    const localDate = new Date(utcDate.getTime() + utcDate.getTimezoneOffset() * 60000);
+    const localDate = new Date(
+      utcDate.getTime() + utcDate.getTimezoneOffset() * 60000
+    );
     return localDate.toString();
   };
 
@@ -64,10 +77,12 @@ function App() {
         <h1>Bitcoin and Currency Conversions</h1>
         <p>Last updated: {lastFetchTime && convertTime(lastFetchTime)}</p>
         <button onClick={handleRefetch} disabled={isFetching}>
-          {isFetching ? "Fetching..." : "Refresh"}
+          {isFetching ? 'Fetching...' : 'Refresh'}
         </button>
         <button onClick={handleShowConversionRates}>Conversion Rates</button>
-        <button onClick={handleShowCurrencyConverter}>Currency Converter</button>
+        <button onClick={handleShowCurrencyConverter}>
+          Currency Converter{' '}
+        </button>
         {showConversionRates && <ConversionRates data={data} />}
         {showCurrencyConverter && <CurrencyConverter />}
       </main>
